@@ -1,0 +1,48 @@
+# Import the necessary modules
+import sqlite3
+
+# Define a class to represent a customer
+class Customer:
+  # Initialize the customer with their name and contact information
+  def __init__(self, name, email, phone, address):
+    self.name = name
+    self.email = email
+    self.phone = phone
+    self.address = address
+
+  # Save the customer to the database
+  def save(self):
+    # Connect to the database
+    conn = sqlite3.connect("crm.db")
+
+    # Create a cursor to execute queries
+    cur = conn.cursor()
+
+    # Insert the customer into the customers table
+    cur.execute("""
+    INSERT INTO customers (name, email, phone, address)
+    VALUES (?, ?, ?, ?)
+    """, (self.name, self.email, self.phone, self.address))
+
+    # Save the changes to the database
+    conn.commit()
+
+    # Close the connection to the database
+    conn.close()
+
+  # Add a service to the customer's account
+  def add_service(self, date, notes):
+    # Connect to the database
+    conn = sqlite3.connect("crm.db")
+
+    # Create a cursor to execute queries
+    cur = conn.cursor()
+
+    # Retrieve the customer's ID
+    cur.execute("""
+    SELECT id FROM customers
+    WHERE email = ?
+    """, (self.email,))
+    customer_id = cur.fetchone()[0]
+
+    # Insert the service into the
